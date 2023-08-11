@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import MainPage from "./MainPage.vue";
+import DetailMovie from "./DetailMovie.vue";
+import NotFound from "./NotFound.vue";
 
 export default createRouter({
   history: createWebHistory(),
@@ -7,6 +9,15 @@ export default createRouter({
     {
       path: "/",
       component: MainPage
+    },
+    {
+      path: "/movie/:id",
+      name: "DetailMovie",
+      component: DetailMovie
+    },
+    {
+      path: "/:notFound(.*)",
+      component: NotFound
     }
   ]
 });
