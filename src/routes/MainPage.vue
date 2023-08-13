@@ -6,10 +6,8 @@ import Button from "~/components/Button.vue";
 import Loading from "~/components/Loading.vue";
 
 const moviesStore = useMoviesStore();
-
 const searchingMovie = reactive({ title: "", year: "", page: 1 });
 const totalPage = computed(() => Math.ceil(moviesStore.totalResults / 10));
-
 async function searchMovies() {
   const { title, year, page } = searchingMovie;
   if (!title) {
@@ -32,16 +30,18 @@ function movePrePage() {
     alert("첫번째 페이지 입니다.");
   }
 
-  if (moviesStore.movies && searchingMovie.page > 1) {
-    searchingMovie.page--;
+  if (moviesStore.movies.length && searchingMovie.page > 1) {
+    searchingMovie.page -= 1;
     moviesStore.fetchMovies({ ...searchingMovie });
   }
 }
 
 function moveNextPage() {
-  if (moviesStore.movies && searchingMovie.page < totalPage.value) {
-    searchingMovie.page++;
+  if (moviesStore.movies.length && searchingMovie.page < totalPage.value) {
+    searchingMovie.page += 1;
     moviesStore.fetchMovies({ ...searchingMovie });
+  } else if (searchingMovie.page > totalPage.value) {
+    alert("마지막 페이지 입니다.");
   }
 }
 </script>
@@ -49,9 +49,10 @@ function moveNextPage() {
 <template>
   <div class="bg-black w-full h-20 px-15 flex items-center justify-center">
     <div class="flex w-4/5 items-center gap-4">
-      <div class="flex w-1/4">
+      <div
+        class="flex w-1/4 items-center text-white font-bold text-3xl cursor-pointer">
         <TheIcon>Movie</TheIcon>
-        <h1 class="w-4/5 text-white font-bold text-3xl">영화 검색</h1>
+        <h1 class="ml-3 w-4/5">영화 검색</h1>
       </div>
       <div
         class="flex flex-grow mr-10 text-xl h-10 px-4 bg-gray-600 rounded-lg items-center text-white">
@@ -61,7 +62,7 @@ function moveNextPage() {
           placeholder="영화 제목을 입력해주세요."
           @keydown.enter="searchMovies" />
         <TheIcon
-          class="mr-2"
+          class="mr-2 cursor-pointer"
           @click="searchMovies"
           >search</TheIcon
         >
@@ -74,23 +75,29 @@ function moveNextPage() {
   <div
     v-else
     class="px-12 my-5">
-    <ul class="box-border grid grid-cols-5 gap-6">
+    <ul class="box-border grid grid-cols-5 gap-6 h-5/6">
       <li
+        class="w-full h-full"
         v-for="movie in moviesStore.movies"
         :key="movie.imdbID">
         <router-link
           :to="{ name: 'DetailMovie', params: { id: movie.imdbID } }">
           <div class="w-full h-full group relative">
-            <div class="w-full h-5/6 cursor-pointer">
+            <div class="w-full h-full">
               <img
                 v-if="movie.Poster !== 'N/A'"
                 class="object-cover w-full h-full rounded-md transition-transform transform group-hover:scale-105"
                 :src="movie.Poster"
                 alt="movie-poster" />
+              <div
+                v-else
+                class="w-full h-full text-white flex justify-center items-center">
+                <span class="font-bold text-lg">No-Image</span>
+              </div>
             </div>
             <div
-              class="absolute w-full h-full hidden group-hover:flex justify-center">
-              <span class="block text-white font-bold text-xl text-center">{{
+              class="absolute w-full h-fit hidden group-hover:flex justify-center bottom-1">
+              <span class="block text-white font-bold text-md text-center">{{
                 movie.Title
               }}</span>
             </div>
@@ -98,17 +105,11 @@ function moveNextPage() {
         </router-link>
       </li>
     </ul>
-    <div class="flex justify-center">
-      <Button
-        v-if="moviesStore.movies.length"
-        @click="movePrePage"
-        >Prev</Button
-      >
-      <Button
-        v-if="moviesStore.movies.length"
-        @click="moveNextPage"
-        >Next</Button
-      >
+    <div
+      v-if="moviesStore.movies.length"
+      class="flex justify-center">
+      <Button @click="movePrePage">Prev</Button>
+      <Button @click="moveNextPage">Next</Button>
     </div>
   </div>
 </template>

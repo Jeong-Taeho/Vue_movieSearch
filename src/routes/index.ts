@@ -8,6 +8,7 @@ export default createRouter({
   routes: [
     {
       path: "/",
+      name: "MainPage",
       component: MainPage
     },
     {
