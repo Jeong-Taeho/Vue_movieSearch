@@ -8,7 +8,7 @@ import Loading from "~/components/Loading.vue";
 const moviesStore = useMoviesStore();
 const searchingMovie = reactive({ title: "", year: "", page: 1 });
 const totalPage = computed(() => Math.ceil(moviesStore.totalResults / 10));
-const searchingData = searchingMovie;
+
 async function searchMovies() {
   const { title, year, page } = searchingMovie;
   if (!title) {
@@ -35,7 +35,6 @@ function movePrePage() {
     searchingMovie.page -= 1;
     moviesStore.fetchMovies({ ...searchingMovie });
   }
-  console.log(searchingData);
 }
 
 function moveNextPage() {
@@ -45,7 +44,6 @@ function moveNextPage() {
   } else if (searchingMovie.page > totalPage.value) {
     alert("마지막 페이지 입니다.");
   }
-  console.log(searchingData);
 }
 </script>
 
@@ -84,8 +82,7 @@ function moveNextPage() {
         v-for="movie in moviesStore.movies"
         :key="movie.imdbID">
         <router-link
-          :to="{ name: 'DetailMovie', params: { id: movie.imdbID } }"
-          :searchingData="searchingData">
+          :to="{ name: 'DetailMovie', params: { id: movie.imdbID } }">
           <div class="w-full h-full group relative">
             <div class="w-full h-full">
               <img
