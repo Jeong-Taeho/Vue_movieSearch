@@ -106,7 +106,9 @@ function moveNextPage() {
         </router-link>
       </li>
     </ul>
-    <router-view></router-view>
+    <Transition>
+      <RouterView />
+    </Transition>
     <div
       v-if="moviesStore.movies.length"
       class="flex justify-center">
@@ -115,3 +117,15 @@ function moveNextPage() {
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>
