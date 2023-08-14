@@ -9,12 +9,14 @@ export default createRouter({
     {
       path: "/",
       name: "MainPage",
-      component: MainPage
-    },
-    {
-      path: "/movie/:id",
-      name: "DetailMovie",
-      component: DetailMovie
+      component: MainPage,
+      children: [
+        {
+          path: "/movie/:id",
+          name: "DetailMovie",
+          component: DetailMovie
+        }
+      ]
     },
     {
       path: "/:notFound(.*)",
